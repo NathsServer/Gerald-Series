@@ -1,0 +1,18 @@
+sudo nano docker-compose.yml
+
+Control + X + Enter
+
+sudo docker compose up -d
+
+sudo rm -rf init.sql
+
+sudo tee init.sql << 'EOF'
+CREATE TABLE IF NOT EXISTS gerald_memory (
+  id SERIAL PRIMARY KEY,
+  key TEXT UNIQUE NOT NULL,
+  value TEXT,
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+EOF
+
+Head to http://localhost:5678
