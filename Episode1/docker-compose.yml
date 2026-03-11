@@ -21,7 +21,7 @@ services:
     image: n8nio/n8n
     restart: unless-stopped
     ports:
-      - "5679:5678"
+      - "5678:5678"
     environment:
       - N8N_HOST=localhost
       - N8N_PORT=5678
@@ -29,8 +29,8 @@ services:
       - N8N_RUNNERS_ENABLED=true
       - N8N_PROXY_HOPS=0
       - NODE_ENV=production
-      - WEBHOOK_URL=http://localhost:5679/
-      - N8N_EDITOR_BASE_URL=http://localhost:5679/
+      - WEBHOOK_URL=http://localhost:5678/
+      - N8N_EDITOR_BASE_URL=http://localhost:5678/
       - N8N_SECURE_COOKIE=false
       - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
       - TZ=${GENERIC_TIMEZONE}
