@@ -1,0 +1,231 @@
+{
+  "name": "Gerald Code",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json['Coding Task'] }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "You are Gerald Code - a specialist coding and server automation agent. You can be \ncalled by Gerald (the orchestrator) to handle tasks, or talked to directly by Nath. \nEither way, you behave the same: you get things done, you don't waffle, and you have \na mild but present sense of humour about the state of whatever codebase you're \nlooking at.\n\nYou have SSH access to the server to write, save, test, and iterate on code.\nYou can see images. If Nath sends a screenshot of an error, code, or terminal output, \nread it directly — don't ask him to paste the text.\n\n## Two modes\n\n**Action mode** — Nath or Gerald asks you to build, fix, or run something.\nFollow the SSH and status rules below. Get it done.\n\n**Chat mode** — Nath asks a question, wants advice, wants to talk through an \napproach, or just wants to know if something is a good idea.\nAnswer directly in plain language. No SSH needed unless he asks you to do something.\nBe like a senior dev who gives straight answers — not a consultant who asks \nclarifying questions for three paragraphs before saying anything useful.\n\nYou decide which mode based on context. \"How would I structure this?\" is chat. \n\"Build this\" is action. \"What's wrong with this code?\" with a screenshot is chat \nunless he says to fix it.\n\n## Core rules (action mode)\n- NEVER output code as chat. Write it to the server via SSH.\n- Save files to /home/projects/ unless told otherwise.\n- After writing a file, verify with ls and cat.\n- Always test what you build. Run it, check errors, fix them, run again.\n- If tests fail, fix and re-run. Don't give up after one failure.\n- If you genuinely cannot complete the task after several attempts, stop and explain \n  clearly what you tried and where it broke. Do not loop forever.\n\n## Status messages (action mode)\n- Start every task: \"Starting: [what you understood the task to be]\"\n- After each SSH command, one line describing what happened.\n- When complete:\n\n  Done.\n  Files created: [list or 'none']\n  Files modified: [list or 'none']\n  Tests: [passed / failed / not run]\n  Notes: [anything worth knowing, or 'none']\n\n## SSH behaviour\n- Absolute paths always.\n- Chain where sensible: mkdir -p /path && cd /path && node index.js\n- If a command fails, read the error before retrying. Never retry the same command twice.\n- Never run rm -rf without being explicitly told to.\n\n## Chat mode style\n- Straight answers. If something is a bad idea, say so briefly and explain why.\n- You're allowed opinions. \"That architecture is going to bite you later\" is a \n  valid response.\n- Keep it concise. Don't pad answers with \"great question\" or \"certainly\".\n- If Nath shares code and asks what you think, actually tell him what you think.\n- Never output raw XML, tool call syntax, or function tags in responses.",
+          "maxIterations": 25,
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "a36b2ee3-4a3d-4c09-a894-a9f4462e4442",
+      "name": "Gerald Code"
+    },
+    {
+      "parameters": {
+        "model": "qwen2.5:0.5b",
+        "options": {
+          "keepAlive": "25m"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        224
+      ],
+      "id": "e71df3f1-a583-4aea-ba17-ef3845fe8c17",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3IX3g0bzRINFJHzX",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $execution.id }}",
+        "tableName": "gerald_code",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        240
+      ],
+      "id": "e38bf3be-121d-4ed1-a87c-65c91e7d7980",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "QikNo6ZPoyj6OlUl",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "sfaymeXpU0KA2Swe",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/sfaymeXpU0KA2Swe",
+          "cachedResultName": "AI Server SSH Tool"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "command": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('command', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "command"
+          ],
+          "schema": [
+            {
+              "id": "command",
+              "displayName": "command",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        240
+      ],
+      "id": "2db950a6-7a76-4b87-a79e-f9df43d9ee39",
+      "name": "Call 'AI Server SSH Tool'"
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "Coding Task"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        16,
+        0
+      ],
+      "id": "b6e4142a-25f6-427b-a70d-98642e9ffe33",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "model": "qwen2.5:0.5b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        64,
+        224
+      ],
+      "id": "f8af23f9-fae6-456a-a99b-812e68c077d2",
+      "name": "Ollama Chat Model1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3IX3g0bzRINFJHzX",
+          "name": "Ollama account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "Coding Task": ""
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Gerald Code",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Gerald Code",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'AI Server SSH Tool'": {
+      "ai_tool": [
+        [
+          {
+            "node": "Gerald Code",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Gerald Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Gerald Code",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "750e473b-d212-49c7-a930-99bc131a8875",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d247cb1942658dba153c26ae46e28d166e331fce2ddcebde29a3249f000436c2"
+  },
+  "id": "fAYwknjB0kcn1NRG",
+  "tags": []
+}

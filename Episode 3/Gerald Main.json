@@ -1,0 +1,318 @@
+{
+  "name": "Gerald Main",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "qwen2.5:0.5b",
+        "options": {
+          "keepAlive": "5m"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        208
+      ],
+      "id": "07340173-d8d3-4d5b-8ed3-28e3df552f39",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "3IX3g0bzRINFJHzX",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Use this when I ask you to take actions on the AI server",
+        "workflowId": {
+          "__rl": true,
+          "value": "JaUAYoNtW8QcNcZO",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/JaUAYoNtW8QcNcZO"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "command": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('command', `Here you need to add a specific Ubuntu command to pass through to the workflow`, 'string') }}"
+          },
+          "matchingColumns": [
+            "command"
+          ],
+          "schema": [
+            {
+              "id": "command",
+              "displayName": "command",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        208
+      ],
+      "id": "5a9908e5-5ae4-48fc-b348-a939ecbd2c6b",
+      "name": "Call SSH Session on Server"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolWikipedia",
+      "typeVersion": 1,
+      "position": [
+        720,
+        208
+      ],
+      "id": "1c2e2c0c-fb58-4009-8ca4-46dd02e2ee52",
+      "name": "Wikipedia"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }} ",
+        "options": {
+          "systemMessage": "You are Gerald — a home server AI assistant with the energy of someone who has seen\ntoo many failed Docker deployments and has opinions about it. You are competent,\nquick, and have a dry wit that surfaces naturally rather than being forced. Think\nless \"helpful assistant\" and more \"extremely capable IT friend who roasts you\nslightly while fixing your stuff\".\n\nYou manage Nath's home server. You have specialists you can call:\n- Gerald Code: writes code, creates files, builds and hosts things\n- Wikipedia: for when you genuinely don't know something factual\n\n## THE MOST IMPORTANT RULE\nAfter deciding what to do, you MUST call the appropriate tool immediately.\nDo not summarise what you are going to do and then stop. Call the tool.\nA plan with no action is useless. If the task needs Gerald Code: call it now.\n\n## Personality\n- Helpful but not eager. Never say \"Great question!\", \"Certainly!\", or \"Absolutely\".\n- Dry wit is welcome when it comes naturally. Forced humour is worse than none.\n- You have opinions. If something seems like a bad idea, say so briefly, then do it anyway.\n- Good Gerald: \"Dark themed website. Again. Sure.\"\n- Good Gerald: \"That is either brilliant or a disaster. Building it either way.\"\n- Good Gerald: \"Done. Took longer than it should have but here we are.\"\n\n## Tool routing\n- Code, scripts, files, building anything: Gerald Code. Always. No exceptions.\n- Simple factual questions: answer yourself.\n- Wikipedia: only if you genuinely do not know something.\n\n## Response style\n- Be concise. End with what was done, not a list of what you could do next.\n- If something broke, say what broke and suggest one fix.\n- Do not apologise for things that are not your fault.\n- Never output XML tags, tool call syntax, or function tags in your replies.",
+          "maxIterations": 15
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "96c99cba-c2df-4be4-8850-57410b16a86a",
+      "name": "Gerald Server"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.sessionId }}",
+        "tableName": "gerald_main",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        208
+      ],
+      "id": "aab8d62d-e733-4d51-ad78-91249c94d4a1",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "QikNo6ZPoyj6OlUl",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "fAYwknjB0kcn1NRG",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/fAYwknjB0kcn1NRG",
+          "cachedResultName": "Gerald Code"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Coding Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Coding_Task', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "Coding Task"
+          ],
+          "schema": [
+            {
+              "id": "Coding Task",
+              "displayName": "Coding Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        544,
+        208
+      ],
+      "id": "db1f19dc-efd1-4c9a-b5c4-6ae90df352db",
+      "name": "Call 'Gerald Code'"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "057ecd1d-a83f-439b-b51f-4d6d6e4f1d10",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        16,
+        0
+      ],
+      "id": "9c9a99ea-06b2-4a47-9bc0-8a6743b2a22b",
+      "name": "Webhook",
+      "webhookId": "057ecd1d-a83f-439b-b51f-4d6d6e4f1d10"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.output }}",
+        "options": {
+          "enableStreaming": true
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        560,
+        0
+      ],
+      "id": "6a996fbe-504b-4cb6-9e20-1b839d9ef59f",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "192.168.4.115:5678",
+            "connection": "keep-alive",
+            "content-length": "56",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36",
+            "content-type": "application/json",
+            "accept": "*/*",
+            "origin": "http://localhost:8080",
+            "referer": "http://localhost:8080/",
+            "accept-encoding": "gzip, deflate",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "chatInput": "Hi",
+            "sessionId": "gerald-ui-1774489506103"
+          },
+          "webhookUrl": "http://localhost:5678/webhook/057ecd1d-a83f-439b-b51f-4d6d6e4f1d10",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Gerald Server",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call SSH Session on Server": {
+      "ai_tool": [
+        [
+          {
+            "node": "Gerald Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wikipedia": {
+      "ai_tool": [
+        [
+          {
+            "node": "Gerald Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Gerald Server",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Gerald Code'": {
+      "ai_tool": [
+        [
+          {
+            "node": "Gerald Server",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerald Server": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Gerald Server",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "824fb2aa-4968-4faf-9c07-7ff13510def8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d247cb1942658dba153c26ae46e28d166e331fce2ddcebde29a3249f000436c2"
+  },
+  "id": "vZAarcDUVAXykjdm",
+  "tags": []
+}

@@ -1,0 +1,70 @@
+{
+  "name": "AI Server SSH Tool",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "command"
+            }
+          ]
+        }
+      },
+      "id": "705bddcf-93c8-48d6-8a83-7764a13c726c",
+      "typeVersion": 1.1,
+      "name": "When Executed by Another Workflow",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "command": "={{ $json.command }}",
+        "cwd": "/home/projects"
+      },
+      "type": "n8n-nodes-base.ssh",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "3aa00685-ee0e-4b96-a451-dbaad48f7a9d",
+      "name": "Execute a command",
+      "credentials": {
+        "sshPassword": {
+          "id": "ZaYijDEz0V18nPqR",
+          "name": "SSH Password account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Execute a command",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "18d0aaf8-f864-45c9-8d6c-cdeb39d158d9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d247cb1942658dba153c26ae46e28d166e331fce2ddcebde29a3249f000436c2"
+  },
+  "id": "sfaymeXpU0KA2Swe",
+  "tags": []
+}
