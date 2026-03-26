@@ -1,3 +1,5 @@
+> ⚠️ **Note:** You may notice `.env` files in this repo — they contain completely generic placeholder values. None of these credentials are used on my actual server.
+
 # Gerald 2.0
 
 A fully self-hosted AI assistant built with n8n and Ollama. No APIs, no cloud, no subscriptions — just your hardware.
