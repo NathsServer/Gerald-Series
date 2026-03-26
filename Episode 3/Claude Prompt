@@ -1,0 +1,48 @@
+Build me a Progressive Web App (PWA) chat interface called "Gerald" — a frontend for a local AI agent running on my home server.
+
+WHAT IT DOES:
+The app sends user messages to a webhook endpoint and displays Gerald's responses. All conversation is in-memory (no persistence needed). It should feel like a polished, finished product — not a dev tool.
+
+TECHNICAL REQUIREMENTS:
+- Single HTML file (index.html) with all CSS and JS inline — no build step, no dependencies except one font from Google Fonts
+- POST messages to a configurable webhook URL (set as a const at the top of the file: const WEBHOOK_URL = "http://your-server-ip:5679/webhook/gerald")
+- Request format: POST with JSON body { "chatInput": "user message here", "sessionId": "gerald-ui-[timestamp]" }
+- Display the response from the JSON field "output"
+- Session ID generated once on page load and reused for the whole session
+- PWA manifest embedded inline (as a blob URL) so it can be installed to home screen
+- Service worker for offline shell (just show "Gerald is offline" if no connection)
+- Mobile-first responsive layout that also works on desktop
+
+DESIGN DIRECTION — dark, terminal-inspired, minimal:
+- Dark background (#0d0d0d or similar near-black)
+- Monospace font for Gerald's responses (suggest JetBrains Mono from Google Fonts), clean sans-serif for user messages
+- Colour accent: a single muted green (#4ade80 or similar) used sparingly — Gerald's name, the status dot, send button hover
+- Header: "Gerald" in the accent colour, small green pulsing dot showing he's online, subtle version label "v2.0"
+- Message bubbles: user messages right-aligned with a subtle dark surface background, Gerald's responses left-aligned, no bubble — just text with the monospace font
+- Thinking indicator: three animated dots in the accent colour while waiting for response
+- Input bar pinned to bottom, full-width text input, send on Enter or button click
+- No avatars, no timestamps, no unnecessary chrome — maximum focus on the conversation
+
+BEHAVIOUR:
+- Disable input and show thinking indicator while waiting for response
+- If the request fails, show an inline error message styled as a Gerald response: "Connection failed. Is the server running?"
+- Auto-scroll to latest message
+- Input clears after sending
+- On mobile, input should not cause the page to scroll behind the keyboard
+
+PWA:
+- App name: "Gerald"
+- Short name: "Gerald"
+- Display: standalone
+- Theme colour: #0d0d0d
+- Background colour: #0d0d0d
+- Include a simple SVG icon (a stylised "G" in the accent green on dark background) embedded as a data URI
+
+WHAT NOT TO DO:
+- No React, no Vue, no build tools
+- No external API calls except to the webhook
+- No localStorage or cookies
+- No sidebar, no conversation history list, no settings panel — keep it brutally simple
+- No purple gradients, no generic AI chatbot aesthetic
+
+Deliver a single index.html file. Add a comment at the top explaining the only thing the user needs to change is the WEBHOOK_URL constant.
