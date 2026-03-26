@@ -173,8 +173,8 @@ This repo follows along with my YouTube series where I build Gerald from scratch
 
 ## Support
 
-- 📸 Instagram: [@NathServer](https://instagram.com/NathServer)
-- 🎬 YouTube: [@NathServer](https://youtube.com/@NathServer)
+- 📸 Instagram: [@NathsServer](https://www.instagram.com/NathsServer)
+- 🎬 YouTube: [@NathsServer](https://www.youtube.com/@NathsServer)
 
 If Gerald helps you build something cool, let me know — I'd love to see it.
 
