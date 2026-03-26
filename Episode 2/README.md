@@ -41,6 +41,7 @@ ollama pull qwen2.5:0.5b
 
 This replaces the old `gerald_memory` table with two separate tables — one for each agent:
 
+> ⚠️ **Data loss warning:** The command below drops the existing `gerald_memory` table and permanently deletes all Episode 1 conversation history. If you want to keep it, back up the table first (for example with `pg_dump` or by renaming it) so you can migrate or reference old conversations later.
 ```bash
 sudo docker compose exec db psql -U n8n -d n8n -c "
 DROP TABLE IF EXISTS gerald_memory;
