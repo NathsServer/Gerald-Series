@@ -1,0 +1,111 @@
+name: youtube-n8n
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=localhost
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_RUNNERS_ENABLED=true
+      - N8N_PROXY_HOPS=0
+      - NODE_ENV=production
+      - WEBHOOK_URL=http://localhost:5678/
+      - N8N_EDITOR_BASE_URL=http://localhost:5678/
+      - N8N_SECURE_COOKIE=false
+      - N8N_COMMUNITY_PACKAGES_ALLOW_TOOL_USAGE=true
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - TZ=${GENERIC_TIMEZONE}
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=db
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - /srv:/srv
+    depends_on:
+      db:
+        condition: service_healthy
+
+
+  mcp-github:
+    image: supercorp/supergateway
+    container_name: mcp-github
+    network_mode: host
+    command: >
+      --stdio "npx -y @modelcontextprotocol/server-github"
+      --port 8883
+      --outputTransport sse
+    environment:
+      - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_TOKEN}
+    restart: unless-stopped
+
+  mcp-filesystem:
+    image: supercorp/supergateway
+    container_name: mcp-filesystem
+    network_mode: host
+    command: >
+      --stdio "npx -y @modelcontextprotocol/server-filesystem /" 
+      --port 8881
+      --outputTransport sse
+    volumes:
+      - /srv:/srv # CHANGE IF NEEDED
+    restart: unless-stopped
+
+  mcp-brave:
+    image: supercorp/supergateway
+    container_name: mcp-brave
+    network_mode: host
+    command: >
+      --stdio "npx -y @modelcontextprotocol/server-brave-search"
+      --port 8882
+      --outputTransport sse
+    environment:
+      - BRAVE_API_KEY=${BRAVE_API_KEY}
+    restart: unless-stopped
+
+
+  mcp-ollama:
+    image: supercorp/supergateway
+    container_name: mcp-ollama
+    network_mode: host
+    command: >
+      --stdio "npx -y ollama-mcp-server"
+      --port 8884
+      --outputTransport sse
+    restart: unless-stopped
+
+  mcp-postgres:
+    image: supercorp/supergateway
+    container_name: mcp-postgres
+    network_mode: host
+    command: >
+      --stdio "npx -y @modelcontextprotocol/server-postgres postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}"
+      --port 8885
+      --outputTransport sse
+    restart: unless-stopped
+
+volumes:
+  n8n_data:
+  db_data:
