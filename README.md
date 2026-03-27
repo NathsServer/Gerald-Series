@@ -38,6 +38,7 @@ Gerald started as a personal project to replace cloud-based AI agents with somet
 | **[Episode 1](./Episode1)** | Base setup: n8n + Ollama + SSH tool + Wikipedia |
 | **[Episode 2](./Episode%202)** | Multi-agent setup: Gerald Code sub-agent + Postgres memory |
 | **[Episode 3](./Episode%203)** | Custom WebUI: PWA chat interface for Gerald |
+| **[Episode 4](./Episode%204)** | MCP servers: Filesystem, Brave Search, GitHub, Ollama & Postgres via Supergateway |
 
 ---
 
@@ -154,6 +155,30 @@ The UI ships as a Progressive Web App. On mobile:
 - **Android Chrome:** tap the menu → *Add to Home Screen* / *Install App*
 
 Once installed it opens full-screen with no browser chrome, just like a native app.
+
+---
+
+## Episode 4 — MCP Servers
+
+Replace the SSH-based tool approach with five **Model Context Protocol (MCP)** servers — Filesystem, Brave Search, GitHub, Ollama, and Postgres — all exposed as SSE endpoints via Supergateway, and wired into a new unified **Gerald Tools** sub-agent.
+
+**Files:** `Gerald Main.json`, `Gerald Tools.json`, `docker-compose.yml`
+
+```bash
+# Add new keys to .env
+BRAVE_API_KEY=your_brave_api_key
+GITHUB_TOKEN=your_github_pat
+
+# Restart the stack to pull and start the MCP containers
+sudo docker compose up -d
+
+# Verify each MCP server is responding
+curl http://localhost:8881/sse  # Filesystem
+curl http://localhost:8882/sse  # Brave Search
+curl http://localhost:8883/sse  # GitHub
+curl http://localhost:8884/sse  # Ollama
+curl http://localhost:8885/sse  # Postgres
+```
 
 ---
 
