@@ -36,7 +36,7 @@ By the end of this episode Gerald will be able to:
 - Docker & Docker Compose installed
 - n8n running (see [Episode 1](../Episode1/README.md))
 - **Brave Search API key** — [https://api.search.brave.com/app/keys](https://api.search.brave.com/app/keys) (free tier available — setting a small monthly spend limit is recommended)
-- **GitHub Personal Access Token** — [https://github.com/settings/tokens](https://github.com/settings/tokens) (classic token, `repo` scope)
+- **GitHub Personal Access Token** — prefer a [fine-grained PAT](https://github.com/settings/personal-access-tokens/new) scoped to only the repositories Gerald needs to access, with **Contents: Read** and **Metadata: Read** permissions. If you must use a classic token ([https://github.com/settings/tokens](https://github.com/settings/tokens)), grant only the `repo` scope and avoid `admin:*` or `write:*` scopes to minimise blast radius if the token is ever leaked.
 
 ---
 
