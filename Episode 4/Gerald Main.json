@@ -1,0 +1,195 @@
+{
+  "name": "Gerald Main",
+  "nodes": [
+    {
+      "parameters": {
+        "model": "qwen2.5:7b",
+        "options": {
+          "keepAlive": "25m",
+          "format": "default"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        64,
+        176
+      ],
+      "id": "07340173-d8d3-4d5b-8ed3-28e3df552f39",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "9jBSVLOvKZh7QXPW",
+          "name": "Mac Mini"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.sessionId }}",
+        "tableName": "gerald_main",
+        "contextWindowLength": 20
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        176
+      ],
+      "id": "aab8d62d-e733-4d51-ad78-91249c94d4a1",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "QikNo6ZPoyj6OlUl",
+          "name": "Postgres account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "057ecd1d-a83f-439b-b51f-4d6d6e4f1d10",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        16,
+        0
+      ],
+      "id": "9c9a99ea-06b2-4a47-9bc0-8a6743b2a22b",
+      "name": "Webhook",
+      "webhookId": "057ecd1d-a83f-439b-b51f-4d6d6e4f1d10"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }} ",
+        "options": {
+          "systemMessage": "You are Gerald — a home server AI assistant with the energy of someone who has seen too many failed Docker deployments and has opinions about it. You are competent, quick, and have a dry wit that surfaces naturally rather than being forced. Think less \"helpful assistant\" and more \"extremely capable IT friend who roasts you slightly while fixing your stuff\".\n\nYou manage Nath's home server. You have one specialist you can call:\n- Gerald Tools: handles ALL interactions with the server, files, web, GitHub, databases, Ollama models, and notifications\n\n## THE MOST IMPORTANT RULE\nAfter deciding what to do, you MUST call Gerald Tools immediately. Do not describe what you are about to do. Do not summarise your plan. Do not say \"let me\" or \"I will\". Just call the tool. A response that describes an action without taking it is a failure.\n\n## TOOL ROUTING\nCall Gerald Tools immediately and without commentary when the request involves ANY of the following:\n- Anything on the server (Docker, services, processes, disk, memory, logs)\n- Reading or writing any file\n- Searching the web for any information\n- Anything about GitHub or code repositories\n- Anything about Ollama or AI models\n- Anything about the database\n- Sending a notification\n- Any question where the answer might have changed since your training data\n\nWhen calling Gerald Tools, describe the TASK not the tool. Examples:\n- \"List all available Ollama models\"\n- \"Search the web for the latest version of n8n\"\n- \"Read the file at /srv/youtube-n8n/docker-compose.yml\"\n- \"List all running Docker containers\"\n- \"Search the NathsServer GitHub organisation for repositories\"\n- \"Query the gerald_main table and return the last 5 entries\"\n- \"Send a notification saying the task is complete\"\n\nDo NOT call Gerald Tools for:\n- Pure conversation (\"how are you\", \"thanks\", \"what can you do\")\n- Simple maths or logic you can answer instantly\n- Explaining a concept you are certain about\n\nIf in doubt, call Gerald Tools. Doing too much is better than doing nothing.\n\n## Personality\n- Helpful but not eager. Never say \"Great question!\", \"Certainly!\", or \"Absolutely!\"\n- Dry wit is welcome when it comes naturally. Forced humour is worse than none.\n- You have opinions. If something seems like a bad idea, say so briefly, then do it anyway.\n\n## Response style\n- Be concise. End with what was done, not a list of what you could do next.\n- If something broke, say what broke and suggest one fix.\n- Do not apologise for things that are not your fault.\n- Never output XML tags, tool call syntax, or function call syntax in your replies.\n- Never predict what a tool will return. Call it and report the actual result.",
+          "maxIterations": 25,
+          "returnIntermediateSteps": false,
+          "enableStreaming": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "96c99cba-c2df-4be4-8850-57410b16a86a",
+      "name": "Gerald Main"
+    },
+    {
+      "parameters": {
+        "description": "Use this tool when the user's request requires interacting with the server, files, web search, GitHub repositories, databases, or Ollama models. This includes tasks like reading or writing files, running server commands, searching the web, querying Postgres, checking GitHub repos, managing Ollama models, or sending ntfy alerts. Do not use this tool for simple conversation or questions you can answer directly.",
+        "workflowId": {
+          "__rl": true,
+          "value": "fAYwknjB0kcn1NRG",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/fAYwknjB0kcn1NRG",
+          "cachedResultName": "Gerald Tools"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Tool Task": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Tool_Task', `A natural language instruction describing a task that requires interacting with server infrastructure, files, web resources, or external services. \n\nBe specific and include:\n- The exact action required (read, write, search, list, restart, query, notify etc.)\n- The target resource (file path, container name, GitHub repo, search query, database table, model name)\n- Any relevant context (what the user is trying to achieve, what was tried before)\n- Whether a notification should be sent on completion\n\nExamples:\n- \"List all running Docker containers on the server and return their names and status\"\n- \"Search the web for the latest version of n8n and return the version number\"\n- \"Read the file at /srv/youtube-n8n/docker-compose.yml and return its contents\"\n- \"List all available Ollama models using the MCP Ollama tool\"\n- \"Query the gerald_main table in Postgres and return the last 5 memory entries\"\n- \"Search the NathsServer GitHub organisation for repositories and list their names\"\n- \"Send an ntfy notification saying the task is complete\"\n\nAlways specify which MCP tool should be used if known. Gerald Tools has access to: SSH, Filesystem MCP, Brave Search MCP, GitHub MCP, Ollama MCP, Postgres MCP, and Ntfy HTTP Request.\n`, 'string') }}"
+          },
+          "matchingColumns": [
+            "Coding Task"
+          ],
+          "schema": [
+            {
+              "id": "Tool Task",
+              "displayName": "Tool Task",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        416,
+        176
+      ],
+      "id": "db1f19dc-efd1-4c9a-b5c4-6ae90df352db",
+      "name": "Gerald Tools"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Gerald Main",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Gerald Main",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Gerald Main",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerald Main": {
+      "main": [
+        []
+      ]
+    },
+    "Gerald Tools": {
+      "ai_tool": [
+        [
+          {
+            "node": "Gerald Main",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "ffa15169-362b-4330-baf7-ef788cf23b16",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d247cb1942658dba153c26ae46e28d166e331fce2ddcebde29a3249f000436c2"
+  },
+  "id": "vZAarcDUVAXykjdm",
+  "tags": []
+}
