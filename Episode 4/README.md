@@ -84,7 +84,7 @@ data: /message?sessionId=...
 
 If a server doesn't respond (or curl exits immediately with an error), check its logs with `sudo docker compose logs <container-name>` (e.g. `mcp-brave`).
 
-### 5. Import the updated workflows into n8n
+### 5. Import the updated workflows into n8n (unless following along or building your own)
 
 Inside n8n, import and activate both new workflows:
 1. `Gerald Main.json`
