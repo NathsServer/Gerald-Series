@@ -65,24 +65,24 @@ This will pull the new container images and start the MCP servers alongside the 
 
 ### 4. Verify the MCP servers are running
 
-Once the stack is up, check that each MCP server is responding:
+Once the stack is up, check that each MCP server is responding. SSE connections stay open by design, so `--max-time 3` is used to get the initial event and exit:
 
 ```bash
-curl http://localhost:8881/sse  # Filesystem
-curl http://localhost:8882/sse  # Brave Search
-curl http://localhost:8883/sse  # GitHub
-curl http://localhost:8884/sse  # Ollama
-curl http://localhost:8885/sse  # Postgres
+curl --max-time 3 http://localhost:8881/sse  # Filesystem
+curl --max-time 3 http://localhost:8882/sse  # Brave Search
+curl --max-time 3 http://localhost:8883/sse  # GitHub
+curl --max-time 3 http://localhost:8884/sse  # Ollama
+curl --max-time 3 http://localhost:8885/sse  # Postgres
 ```
 
-Each should return something like:
+Each should print something like the following and then exit:
 
 ```
 event: endpoint
 data: /message?sessionId=...
 ```
 
-If a server doesn't respond, check its logs with `sudo docker compose logs <container-name>` (e.g. `mcp-brave`).
+If a server doesn't respond (or curl exits immediately with an error), check its logs with `sudo docker compose logs <container-name>` (e.g. `mcp-brave`).
 
 ### 5. Import the updated workflows into n8n
 
